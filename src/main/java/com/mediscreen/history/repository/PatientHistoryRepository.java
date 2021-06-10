@@ -1,16 +1,16 @@
 package com.mediscreen.history.repository;
 
+import java.util.List;
+
 import com.mediscreen.history.model.PatientHistory;
-import com.mongodb.internal.operation.FindAndUpdateOperation;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-@Repository
-public interface PatientHistoryRepository {
+
+public interface PatientHistoryRepository extends MongoRepository<PatientHistory, String> {
     
-    PatientHistory save(PatientHistory patientHistory);
-    PatientHistory findOne(int patId);
-    PatientHistory update(PatientHistory patientHistory);
+    List<PatientHistory> findBypatId(int patId);
+    //PatientHistory update(PatientHistory patientHistory);
 
     
 }

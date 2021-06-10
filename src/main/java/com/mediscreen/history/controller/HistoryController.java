@@ -2,17 +2,22 @@ package com.mediscreen.history.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.mediscreen.history.model.Note;
 import com.mediscreen.history.model.PatientHistory;
 import com.mediscreen.history.repository.MongoDbPatientHistoryRepository;
+import com.mediscreen.history.repository.PatientHistoryRepository;
 import com.mongodb.client.FindIterable;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,19 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HistoryController {
     
 @Autowired
-MongoDbPatientHistoryRepository repo;
-
-// /**
-//  * get the list of notes taken for a patient
-//  * @param patientId
-//  * @return
-//  */
-// @GetMapping(path = "/history/")
-// public ResponseEntity<FindIterable<PatientHistory>> listNotesOfAPatient(int patientId) {
-//     FindIterable<PatientHistory> h = repo.find(patientId);
-//     return ResponseEntity.ok().body(h);
-//     }
-
+PatientHistoryRepository repo;
 
 /**
  * get the list of notes taken for a patient
@@ -41,31 +34,45 @@ MongoDbPatientHistoryRepository repo;
  * @return
  */
 @GetMapping(path = "/history/{patId}")
-public ResponseEntity<List<Note>> listNotesOfAPatient(int patId) {
-    PatientHistory h = repo.findOne(patId);
-    List<Note> notes = h.getNotes();
-    return ResponseEntity.ok().body(notes);
-   }
+public ResponseEntity<List<PatientHistory>> listNotesOfAPatient(@PathVariable("patId") int patId) {
+      List<PatientHistory> stories =  repo.findBypatId(patId);
+      if(stories == null || stories.isEmpty() ) {
+        return ResponseEntity.noContent().build();
+      }
+        return ResponseEntity.ok().body(stories);
+    }
 
-@PostMapping(path = "history/add")
-public ResponseEntity<List<Note>> addAnoteToAPatientHistory(@RequestBody PatientHistory patientHistory) {
-    // on récupère l'history du patient que l'on souhaite compléter
-    PatientHistory historyExisting = repo.findOne(patientHistory.getPatId());
-    // si l'history existante ne contient pas de notes, alors on créer une liste vide que l'on set à cet history.
-    if(historyExisting.getNotes()==null) {
-        List<Note> notestoadd = new ArrayList<>();
-    // on ajoute la note contenu dans les informations envoyées à la liste des notes
-        for(Note note : patientHistory.getNotes()) {
-            notestoadd.add(note);
+   /**
+    * add a new history
+    * @param patientHistory
+    * @return
+    */
+@PostMapping(path = "/history/add")
+public ResponseEntity<PatientHistory> addAhistoryToApatient(@RequestBody PatientHistory patientHistory) {
+    PatientHistory patientHistoryAdded = repo.save(patientHistory);
+    return ResponseEntity.ok().body(patientHistoryAdded);
+    }
+
+    /**
+     * update a history of a patient
+     * @param historyId
+     * @param patientHistoryUpdated
+     * @return
+     */
+    @PutMapping(path = "/history/{patId}/{historyId}")
+    public ResponseEntity<PatientHistory> updateHistoryOfApatient( 
+      @PathVariable("historyId") String historyId, 
+      @RequestBody PatientHistory patientHistoryUpdated) {
+        if (historyId == null) {
+          return ResponseEntity.badRequest().build();
         }
-        historyExisting.setNotes(notestoadd);
-    } else {
-        for(Note note : patientHistory.getNotes()) {
-        historyExisting.getNotes().add(note);
-        }     
-    }
-    return ResponseEntity.ok().body(patientHistory.getNotes());   
-    }
+        PatientHistory patientHistory = repo.findById(historyId).get();
+        patientHistory.setNote(patientHistoryUpdated.getNote());
+        repo.save(patientHistory);
+
+        return ResponseEntity.ok().body(patientHistory);
+      }
+
 }
 
 

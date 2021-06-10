@@ -1,25 +1,38 @@
 package com.mediscreen.history.model;
 
-import java.util.List;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-
+@Document(collection = "histories")
 public class PatientHistory {
 
+    @Id
+    private String historyId;
     private int patId;
-    private List<Note> notes;
+    private Note note;
     
     public PatientHistory() {
     }
 
-    public PatientHistory(int patId, List<Note> notes) {
+    public PatientHistory(int patId, Note note) {
         this.patId = patId;
-        this.notes = notes;
+        this.note = note;
     }
-    public List<Note> getNotes() {
-        return notes;
+
+    
+    public String getHistoryId() {
+        return historyId;
     }
-    public void setNotes(List<Note> notes) {
-        this.notes = notes;
+
+    public void setHistoryId(String historyId) {
+        this.historyId = historyId;
+    }
+
+    public Note getNote() {
+        return note;
+    }
+    public void setNote(Note note) {
+        this.note = note;
     }
 
     public int getPatId() {
@@ -32,11 +45,9 @@ public class PatientHistory {
 
     @Override
     public String toString() {
-        return "PatientHistory [notes=" + notes + ", patientId=" + patId + "]";
+        return "PatientHistory [historyId=" + historyId + ", note=" + note + ", patId=" + patId + "]";
     }
 
-    
-   
 
-    
+     
 }

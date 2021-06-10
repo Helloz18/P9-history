@@ -2,7 +2,6 @@ package com.mediscreen.history.model;
 
 public class Note {
     
-    private int noteId;
     private String noteTitle;
     private String noteContent;
     private String noteDate;
@@ -17,14 +16,6 @@ public class Note {
         this.noteContent = noteContent;
         this.noteDate = noteDate;
         this.doctorName = doctorName;
-    }
-
-    public int getNoteId() {
-        return noteId;
-    }
-
-    public void setNoteId(int noteId) {
-        this.noteId = noteId;
     }
 
     public String getNoteTitle() {
@@ -62,7 +53,7 @@ public class Note {
     @Override
     public String toString() {
         return "Note [doctorName=" + doctorName + ", noteContent=" + noteContent + ", noteDate=" + noteDate
-                + ", noteId=" + noteId + ", noteTitle=" + noteTitle + "]";
+                + ", noteTitle=" + noteTitle + "]";
     }
 
     
