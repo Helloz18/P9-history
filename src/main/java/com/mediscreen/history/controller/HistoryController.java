@@ -1,17 +1,11 @@
 package com.mediscreen.history.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import com.mediscreen.history.model.Note;
 import com.mediscreen.history.model.PatientHistory;
-import com.mediscreen.history.repository.MongoDbPatientHistoryRepository;
 import com.mediscreen.history.repository.PatientHistoryRepository;
-import com.mongodb.client.FindIterable;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,6 +36,18 @@ public ResponseEntity<List<PatientHistory>> listNotesOfAPatient(@PathVariable("p
         return ResponseEntity.ok().body(stories);
     }
 
+    /**
+     * get a history by its id
+     * @param historyId 
+     */
+  @GetMapping(path="/history-update/{historyId}")
+    public ResponseEntity<PatientHistory> getOneHistoryByItsId(
+      @PathVariable("historyId") String historyId ) {
+        PatientHistory patientHistory = repo.findById(historyId).get();
+        return ResponseEntity.ok().body(patientHistory);
+      }
+   
+
    /**
     * add a new history
     * @param patientHistory
@@ -59,7 +65,7 @@ public ResponseEntity<PatientHistory> addAhistoryToApatient(@RequestBody Patient
      * @param patientHistoryUpdated
      * @return
      */
-    @PutMapping(path = "/history/{patId}/{historyId}")
+    @PutMapping(path = "/history-update/{historyId}")
     public ResponseEntity<PatientHistory> updateHistoryOfApatient( 
       @PathVariable("historyId") String historyId, 
       @RequestBody PatientHistory patientHistoryUpdated) {
