@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface PatientHistoryRepository extends MongoRepository<PatientHistory, String> {
     
     List<PatientHistory> findBypatId(int patId);
-    //PatientHistory update(PatientHistory patientHistory);
 
     
 }
