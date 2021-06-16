@@ -2,7 +2,6 @@ package com.mediscreen.history;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mediscreen.history.controller.HistoryController;
